@@ -1,8 +1,13 @@
 from fastapi import FastAPI
 
-app = FastAPI()
-@app.get("/")
-def read_root():
-    return {"Hello": "World"}
+from app.config.settings import settings
+
+app = FastAPI(title=settings.app_name, debug=settings.debug)
 
 
+@app.get("/health", tags=["Health"])
+def read_health():
+    return {
+            "status": "healthy",
+            "environment": settings.app_env,
+            }
