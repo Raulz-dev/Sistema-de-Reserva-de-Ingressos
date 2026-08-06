@@ -12,3 +12,4 @@ class InvalidUserPasswordHashError(Exception):
 
 class InvalidUserRoleError(Exception):
     pass
+

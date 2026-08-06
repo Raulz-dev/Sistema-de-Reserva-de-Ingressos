@@ -40,10 +40,10 @@ class User:
 
     @staticmethod
     def _validate_name(name: str) -> str:
-        normalized_name = name.strip()
-
         if not isinstance(name, str):
             raise InvalidUserNameError("O nome deve ser do tipo string.")
+
+        normalized_name = name.strip()
 
         if len(normalized_name) < 2:
             raise InvalidUserNameError("O nome deve ter no mínimo dois caracteres.")
@@ -68,6 +68,8 @@ class User:
 
     @staticmethod
     def _validate_password_hash(password: str) -> str:
+        if not isinstance(password, str):
+            raise InvalidUserPasswordHashError("A senha deve ser do tipo string")
         if len(password) < 1:
             raise InvalidUserPasswordHashError("A senha não pode ser vazia.")
 
