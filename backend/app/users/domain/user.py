@@ -35,6 +35,9 @@ class User:
     def change_password_hash(self, new_password_hash: str) -> None:
         self.password_hash = self._validate_password_hash(new_password_hash)
 
+    def change_role(self, new_role: UserRole) -> None:
+        self.role = self._validate_role(new_role)
+
     @staticmethod
     def _validate_name(name: str) -> str:
         normalized_name = name.strip()
