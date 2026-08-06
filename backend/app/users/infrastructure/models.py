@@ -1,11 +1,11 @@
 from sqlalchemy import Enum
 from sqlalchemy.orm import Mapped, mapped_column
 
-from app.database.base import Base, IdMixin, IsActiveMixin, TimestampMixin
+from app.database.base import Base, IdMixin, TimestampMixin
 from app.users.domain.enums import UserRole
 
 
-class UserModel(Base, IdMixin, TimestampMixin, IsActiveMixin):
+class UserModel(Base, IdMixin, TimestampMixin):
     __tablename__ = "usuarios"
 
     name: Mapped[str] = mapped_column(nullable=False)
