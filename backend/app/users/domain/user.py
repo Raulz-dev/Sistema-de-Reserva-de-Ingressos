@@ -67,13 +67,13 @@ class User:
         return validated_email.normalized
 
     @staticmethod
-    def _validate_password_hash(password: str) -> str:
-        if not isinstance(password, str):
+    def _validate_password_hash(password_hash: str) -> str:
+        if not isinstance(password_hash, str):
             raise InvalidUserPasswordHashError("A senha deve ser do tipo string")
-        if len(password) < 1:
+        if len(password_hash) < 1:
             raise InvalidUserPasswordHashError("A senha não pode ser vazia.")
 
-        return password
+        return password_hash
 
     @staticmethod
     def _validate_role(role: UserRole) -> UserRole:

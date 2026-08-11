@@ -1,1 +1,21 @@
+from typing import Annotated
 
+from fastapi import Depends
+from sqlalchemy.ext.asyncio import AsyncSession
+
+from app.database.session import get_db
+from app.security.password import PasswordHasher
+from app.users.application.create_user import CreateUser
+from app.users.infrastructure.repository import SQLAlchemyUserRepository
+
+
+def get_create_user(
+    db: Annotated[AsyncSession, Depends(get_db)],
+) -> CreateUser:
+    repository = SQLAlchemyUserRepository(db)
+    password_hasher = PasswordHasher()
+
+    return CreateUser(
+        repository=repository,
+        password_hasher=password_hasher,
+    )

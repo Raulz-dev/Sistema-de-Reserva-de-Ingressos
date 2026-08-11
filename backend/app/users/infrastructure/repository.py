@@ -8,7 +8,7 @@ from app.users.domain.user import User
 from app.users.infrastructure.models import UserModel
 
 
-class sqlalchemyUserRepository(UserRepository):
+class SQLAlchemyUserRepository(UserRepository):
     def __init__(self, db: AsyncSession) -> None:
         self._db = db
 
@@ -28,12 +28,12 @@ class sqlalchemyUserRepository(UserRepository):
         return self._to_domain(user_model)
 
     async def find_by_id(self, user_id: UUID) -> User | None:
-        userExist = await self._db.get(UserModel, user_id)
+        user_model = await self._db.get(UserModel, user_id)
 
-        if userExist is None:
+        if user_model is None:
             return None
 
-        return self._to_domain(userExist)
+        return self._to_domain(user_model)
 
     async def find_by_email(self, user_email: str) -> User | None:
         user = select(UserModel).where(UserModel.email == user_email)
@@ -44,8 +44,8 @@ class sqlalchemyUserRepository(UserRepository):
 
         return self._to_domain(user_model)
 
-    async def update_user(self, user_id: UUID, user) -> User | None:
-        user_model = await self._db.get(UserModel, user_id)
+    async def update_user(self, user: User) -> User | None:
+        user_model = await self._db.get(UserModel, user.id)
 
         if user_model is None:
             return None

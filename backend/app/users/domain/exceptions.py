@@ -13,3 +13,6 @@ class InvalidUserPasswordHashError(Exception):
 class InvalidUserRoleError(Exception):
     pass
 
+
+class UserEmailAlreadyExistsError(Exception):
+    pass
