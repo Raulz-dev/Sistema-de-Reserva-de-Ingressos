@@ -3,14 +3,33 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException, status
 
 from app.users.application.create_user import CreateUser
+from app.users.application.list_all_users import ListUsers
 from app.users.domain.exceptions import UserEmailAlreadyExistsError
-from app.users.presentation.dependencies import get_create_user
+from app.users.presentation.dependencies import get_create_user, get_list_all_user
 from app.users.presentation.schemas import (
     CreateUserRequest,
     CreateUserResponse,
+    ListAllUsersResponse,
 )
 
 router = APIRouter(prefix="/users", tags=["Users"])
+
+
+@router.get(
+    "", response_model=list[ListAllUsersResponse], status_code=status.HTTP_200_OK
+)
+async def list_users(
+    use_case: Annotated[ListUsers, Depends(get_list_all_user)],
+) -> list[ListAllUsersResponse]:
+
+    users = await use_case.execute()
+
+    return [
+        ListAllUsersResponse(
+            id=user.id, name=user.name, email=user.email, role=user.role
+        )
+        for user in users
+    ]
 
 
 @router.post("", response_model=CreateUserResponse, status_code=status.HTTP_201_CREATED)

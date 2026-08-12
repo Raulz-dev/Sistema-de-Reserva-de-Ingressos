@@ -6,6 +6,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.database.session import get_db
 from app.security.password import PasswordHasher
 from app.users.application.create_user import CreateUser
+from app.users.application.list_all_users import ListUsers
 from app.users.infrastructure.repository import SQLAlchemyUserRepository
 
 
@@ -19,3 +20,11 @@ def get_create_user(
         repository=repository,
         password_hasher=password_hasher,
     )
+
+
+def get_list_all_user(
+    db: Annotated[AsyncSession, Depends(get_db)],
+) -> ListUsers:
+    repository = SQLAlchemyUserRepository(db)
+
+    return ListUsers(repository)

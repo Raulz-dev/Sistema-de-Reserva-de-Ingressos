@@ -60,6 +60,12 @@ class SQLAlchemyUserRepository(UserRepository):
 
         return self._to_domain(user_model)
 
+    async def list_user(self) -> list[User] | None:
+        all_users = select(UserModel).order_by(UserModel.name)
+        result = await self._db.scalars(all_users)
+
+        return [self._to_domain(users) for users in result.all()]
+
     def _to_domain(self, user: UserModel) -> User:
         return User(
             id=user.id,
