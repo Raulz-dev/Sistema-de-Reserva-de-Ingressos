@@ -35,3 +35,10 @@ class UpdateUserResponse(BaseModel):
     name: str = Field(min_length=2, max_length=100)
     email: EmailStr
     role: UserRole
+
+
+class GetUserByIdResponse(BaseModel):
+    id: UUID
+    name: str
+    email: str
+    role: UserRole

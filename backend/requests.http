@@ -26,3 +26,7 @@ Content-Type: application/json
   "email": "raul.pontes@example.com",
   "role": "admin"
 }
+
+### Ver usuário por id
+GET  {{baseUrl}}/users/019ff881-7e3b-76c9-8d0e-d46ecb1b5fc9
+Content-Type: application/json

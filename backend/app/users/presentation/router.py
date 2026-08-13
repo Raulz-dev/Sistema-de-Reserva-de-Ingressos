@@ -4,6 +4,7 @@ from uuid import UUID
 from fastapi import APIRouter, Depends, HTTPException, status
 
 from app.users.application.create_user import CreateUser
+from app.users.application.get_user_by_id import GetUserById
 from app.users.application.list_all_users import ListUsers
 from app.users.application.update_user import UpdateUser
 from app.users.domain.exceptions import UserEmailAlreadyExistsError
@@ -11,10 +12,12 @@ from app.users.presentation.dependencies import (
     get_create_user,
     get_list_all_user,
     get_update_user,
+    get_user_by_id,
 )
 from app.users.presentation.schemas import (
     CreateUserRequest,
     CreateUserResponse,
+    GetUserByIdResponse,
     ListAllUsersResponse,
     UpdateUserRequest,
     UpdateUserResponse,
@@ -38,6 +41,19 @@ async def list_users(
         )
         for user in users
     ]
+
+
+@router.get(
+    "/{user_id}", response_model=GetUserByIdResponse, status_code=status.HTTP_200_OK
+)
+async def get_user(
+    user_id: UUID, use_case: Annotated[GetUserById, Depends(get_user_by_id)]
+) -> GetUserById:
+    user = await use_case.execute(user_id)
+
+    return GetUserByIdResponse(
+        id=user.id, name=user.name, email=user.email, role=user.role
+    )
 
 
 @router.post("", response_model=CreateUserResponse, status_code=status.HTTP_201_CREATED)
