@@ -53,7 +53,6 @@ class SQLAlchemyUserRepository(UserRepository):
         user_model.name = user.name
         user_model.email = user.email
         user_model.role = user.role
-        user_model.password_hash = user.password_hash
 
         await self._db.commit()
         await self._db.refresh(user_model)

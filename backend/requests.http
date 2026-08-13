@@ -1,9 +1,9 @@
 @baseUrl = http://localhost:8000/api/v1
 
-### Verificar API
-GET {{baseUrl}}/health
+
 
 ### Criar usuário
+# @name createUser
 POST {{baseUrl}}/users
 Content-Type: application/json
 
@@ -16,3 +16,13 @@ Content-Type: application/json
 ### Ver Usuários
 GET  {{baseUrl}}/users
 Content-Type: application/json
+
+### Atualizar usuário criado acima
+PUT {{baseUrl}}/users/019ff881-7e3b-76c9-8d0e-d46ecb1b5fc9
+Content-Type: application/json
+
+{
+  "name": "Raul Pontes",
+  "email": "raul.pontes@example.com",
+  "role": "admin"
+}

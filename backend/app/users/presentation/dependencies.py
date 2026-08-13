@@ -7,6 +7,7 @@ from app.database.session import get_db
 from app.security.password import PasswordHasher
 from app.users.application.create_user import CreateUser
 from app.users.application.list_all_users import ListUsers
+from app.users.application.update_user import UpdateUser
 from app.users.infrastructure.repository import SQLAlchemyUserRepository
 
 
@@ -28,3 +29,9 @@ def get_list_all_user(
     repository = SQLAlchemyUserRepository(db)
 
     return ListUsers(repository)
+
+
+def get_update_user(db: Annotated[AsyncSession, Depends(get_db)]) -> UpdateUser:
+    repository = SQLAlchemyUserRepository(db)
+
+    return UpdateUser(repository)

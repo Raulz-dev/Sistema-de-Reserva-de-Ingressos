@@ -16,3 +16,7 @@ class InvalidUserRoleError(Exception):
 
 class UserEmailAlreadyExistsError(Exception):
     pass
+
+
+class UserDontExist(Exception):
+    pass
