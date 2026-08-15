@@ -42,3 +42,16 @@ class GetUserByIdResponse(BaseModel):
     name: str
     email: str
     role: UserRole
+
+
+class ChangePasswordRequest(BaseModel):
+    email: EmailStr
+    new_password: str = Field(min_length=8, max_length=128)
+    new_password_confirmation: str = Field(
+        min_length=8,
+        max_length=128,
+    )
+
+
+class ChangePasswordResponse(BaseModel):
+    message: str

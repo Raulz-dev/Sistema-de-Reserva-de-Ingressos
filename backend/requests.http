@@ -1,5 +1,5 @@
 @baseUrl = http://localhost:8000/api/v1
-
+@userId = 019ff881-7e3b-76c9-8d0e-d46ecb1b5fc9
 
 
 ### Criar usuário
@@ -13,12 +13,19 @@ Content-Type: application/json
   "password": "123456"
 }
 
-### Ver Usuários
-GET  {{baseUrl}}/users
+
+### Listar usuários
+GET {{baseUrl}}/users
 Content-Type: application/json
 
-### Atualizar usuário criado acima
-PUT {{baseUrl}}/users/019ff881-7e3b-76c9-8d0e-d46ecb1b5fc9
+
+### Buscar usuário por ID
+GET {{baseUrl}}/users/019ff375-cb8b-7759-955b-c6eaade68fde
+Content-Type: application/json
+
+
+### Atualizar usuário
+PUT {{baseUrl}}/users/{{userId}}
 Content-Type: application/json
 
 {
@@ -27,6 +34,13 @@ Content-Type: application/json
   "role": "admin"
 }
 
-### Ver usuário por id
-GET  {{baseUrl}}/users/019ff881-7e3b-76c9-8d0e-d46ecb1b5fc9
+
+### Alterar senha
+PUT {{baseUrl}}/users/change_password/019ff375-cb8b-7759-955b-c6eaade68fde
 Content-Type: application/json
+
+{
+  "email": "raul@example.com",
+  "new_password": "novaSenha123",
+  "new_password_confirmation": "novaSenha123"
+}

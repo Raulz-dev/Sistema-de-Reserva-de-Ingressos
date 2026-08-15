@@ -5,6 +5,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database.session import get_db
 from app.security.password import PasswordHasher
+from app.users.application.change_password import ChangePassword
 from app.users.application.create_user import CreateUser
 from app.users.application.get_user_by_id import GetUserById
 from app.users.application.list_all_users import ListUsers
@@ -42,3 +43,10 @@ def get_user_by_id(db: Annotated[AsyncSession, Depends(get_db)]) -> GetUserById:
     repository = SQLAlchemyUserRepository(db)
 
     return GetUserById(repository)
+
+
+def get_change_password(db: Annotated[AsyncSession, Depends(get_db)]) -> ChangePassword:
+    repository = SQLAlchemyUserRepository(db)
+    password_hasher = PasswordHasher()
+
+    return ChangePassword(repository, password_hasher)

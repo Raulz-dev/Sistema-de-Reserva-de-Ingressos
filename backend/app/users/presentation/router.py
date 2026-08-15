@@ -3,18 +3,22 @@ from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, status
 
+from app.users.application.change_password import ChangePassword
 from app.users.application.create_user import CreateUser
 from app.users.application.get_user_by_id import GetUserById
 from app.users.application.list_all_users import ListUsers
 from app.users.application.update_user import UpdateUser
 from app.users.domain.exceptions import UserEmailAlreadyExistsError
 from app.users.presentation.dependencies import (
+    get_change_password,
     get_create_user,
     get_list_all_user,
     get_update_user,
     get_user_by_id,
 )
 from app.users.presentation.schemas import (
+    ChangePasswordRequest,
+    ChangePasswordResponse,
     CreateUserRequest,
     CreateUserResponse,
     GetUserByIdResponse,
@@ -91,3 +95,23 @@ async def update_user(
     return UpdateUserResponse(
         id=user_id, name=user.name, email=user.email, role=user.role
     )
+
+
+@router.put(
+    "/change_password/{user_id}",
+    response_model=ChangePasswordResponse,
+    status_code=status.HTTP_200_OK,
+)
+async def change_password(
+    user_id: UUID,
+    data: ChangePasswordRequest,
+    use_case: Annotated[ChangePassword, Depends(get_change_password)],
+) -> ChangePasswordResponse:
+    await use_case.execute(
+        user_id,
+        email=data.email,
+        new_password=data.new_password,
+        new_password_confirmation=data.new_password_confirmation,
+    )
+
+    return ChangePasswordResponse(message="Senha Alterada com sucesso")

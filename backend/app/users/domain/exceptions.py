@@ -20,3 +20,7 @@ class UserEmailAlreadyExistsError(Exception):
 
 class UserDontExist(Exception):
     pass
+
+
+class PasswordFail(Exception):
+    pass
