@@ -55,3 +55,13 @@ class ChangePasswordRequest(BaseModel):
 
 class ChangePasswordResponse(BaseModel):
     message: str
+
+
+class LoginUserRequest(BaseModel):
+    email: EmailStr
+    password: str
+
+
+class LoginUserResponse(BaseModel):
+    access_token: str
+    token_type: str = "bearer"

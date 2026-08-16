@@ -24,3 +24,7 @@ class UserDontExist(Exception):
 
 class PasswordFail(Exception):
     pass
+
+
+class InvalidCredentialsError(Exception):
+    pass
