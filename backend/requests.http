@@ -58,3 +58,42 @@ Authorization: Bearer {{loginUser.response.body.$.access_token}}
   "new_password": "novaSenha123",
   "new_password_confirmation": "novaSenha123"
 }
+
+
+### Criar filme (somente admin)
+# @name createMovie
+POST {{baseUrl}}/movies
+Content-Type: application/json
+Authorization: Bearer {{adminToken}}
+
+{
+  "title": "Interestelar",
+  "synopsis": "Exploradores atravessam um buraco de minhoca no espaço.",
+  "age_rating": "10",
+  "duration_minutes": 169,
+  "genre": "Ficção científica",
+  "trailer_url": "https://www.youtube.com/watch?v=zSWdZVtXT7E"
+}
+
+
+### Listar filmes (público)
+GET {{baseUrl}}/movies
+
+
+### Buscar filme por ID (público)
+GET {{baseUrl}}/movies/{{createMovie.response.body.$.id}}
+
+
+### Atualizar filme (somente admin)
+PUT {{baseUrl}}/movies/{{createMovie.response.body.$.id}}
+Content-Type: application/json
+Authorization: Bearer {{adminToken}}
+
+{
+  "duration_minutes": 170
+}
+
+
+### Excluir filme (somente admin)
+DELETE {{baseUrl}}/movies/{{createMovie.response.body.$.id}}
+Authorization: Bearer {{adminToken}}

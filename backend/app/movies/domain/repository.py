@@ -1,0 +1,16 @@
+from typing import Protocol
+from uuid import UUID
+
+from app.movies.domain.movie import Movie
+
+
+class MovieRepository(Protocol):
+    async def create_movie(self, movie: Movie) -> Movie: ...
+
+    async def find_movie_by_id(self, movie_id: UUID) -> Movie | None: ...
+
+    async def list_movies(self) -> list[Movie]: ...
+
+    async def update_movie(self, movie: Movie) -> Movie: ...
+
+    async def delete_movie(self, movie_id: UUID) -> None: ...

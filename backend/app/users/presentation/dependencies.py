@@ -22,6 +22,12 @@ from app.users.infrastructure.repository import SQLAlchemyUserRepository
 bearer_scheme = HTTPBearer(auto_error=False)
 
 
+def get_user_repository(
+    db: Annotated[AsyncSession, Depends(get_db)],
+) -> SQLAlchemyUserRepository:
+    return SQLAlchemyUserRepository(db)
+
+
 def get_jwt_service() -> JWTService:
     return JWTService(
         secret_key=settings.jwt_secret,
@@ -32,7 +38,7 @@ def get_jwt_service() -> JWTService:
 
 async def get_current_user(
     credentials: Annotated[HTTPAuthorizationCredentials | None, Depends(bearer_scheme)],
-    db: Annotated[AsyncSession, Depends(get_db)],
+    repository: Annotated[SQLAlchemyUserRepository, Depends(get_user_repository)],
     jwt_service: Annotated[JWTService, Depends(get_jwt_service)],
 ) -> User:
     unauthorized = HTTPException(
@@ -53,7 +59,6 @@ async def get_current_user(
     except ValueError as error:
         raise unauthorized from error
 
-    repository = SQLAlchemyUserRepository(db)
     user = await repository.find_by_id(user_id)
 
     if user is None:
@@ -75,9 +80,8 @@ async def require_admin(
 
 
 def get_create_user(
-    db: Annotated[AsyncSession, Depends(get_db)],
+    repository: Annotated[SQLAlchemyUserRepository, Depends(get_user_repository)],
 ) -> CreateUser:
-    repository = SQLAlchemyUserRepository(db)
     password_hasher = PasswordHasher()
 
     return CreateUser(
@@ -87,35 +91,34 @@ def get_create_user(
 
 
 def get_list_all_user(
-    db: Annotated[AsyncSession, Depends(get_db)],
+    repository: Annotated[SQLAlchemyUserRepository, Depends(get_user_repository)],
 ) -> ListUsers:
-    repository = SQLAlchemyUserRepository(db)
-
     return ListUsers(repository)
 
 
-def get_update_user(db: Annotated[AsyncSession, Depends(get_db)]) -> UpdateUser:
-    repository = SQLAlchemyUserRepository(db)
-
+def get_update_user(
+    repository: Annotated[SQLAlchemyUserRepository, Depends(get_user_repository)],
+) -> UpdateUser:
     return UpdateUser(repository)
 
 
-def get_user_by_id(db: Annotated[AsyncSession, Depends(get_db)]) -> GetUserById:
-    repository = SQLAlchemyUserRepository(db)
-
+def get_user_by_id(
+    repository: Annotated[SQLAlchemyUserRepository, Depends(get_user_repository)],
+) -> GetUserById:
     return GetUserById(repository)
 
 
-def get_change_password(db: Annotated[AsyncSession, Depends(get_db)]) -> ChangePassword:
-    repository = SQLAlchemyUserRepository(db)
+def get_change_password(
+    repository: Annotated[SQLAlchemyUserRepository, Depends(get_user_repository)],
+) -> ChangePassword:
     password_hasher = PasswordHasher()
 
     return ChangePassword(repository, password_hasher)
 
 
-def get_login_user(db: Annotated[AsyncSession, Depends(get_db)]) -> Login:
-
-    repository = SQLAlchemyUserRepository(db)
+def get_login_user(
+    repository: Annotated[SQLAlchemyUserRepository, Depends(get_user_repository)],
+) -> Login:
     password_hasher = PasswordHasher()
 
     jwt_service = get_jwt_service()

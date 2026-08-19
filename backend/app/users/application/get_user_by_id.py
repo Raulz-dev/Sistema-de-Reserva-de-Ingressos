@@ -1,6 +1,6 @@
 from uuid import UUID
 
-from app.users.domain.exceptions import UserDontExist
+from app.users.domain.exceptions import UserNotFoundError
 from app.users.domain.repository import UserRepository
 from app.users.domain.user import User
 
@@ -13,6 +13,6 @@ class GetUserById:
         user = await self._repository.find_by_id(user_id)
 
         if user is None:
-            raise UserDontExist("O usuário não foi encontrado!")
+            raise UserNotFoundError("Usuário não encontrado.")
         print("PRINT PRINT PRINT PRINT", user)
         return user

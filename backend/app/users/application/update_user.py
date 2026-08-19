@@ -1,7 +1,7 @@
 from uuid import UUID
 
 from app.users.domain.enums import UserRole
-from app.users.domain.exceptions import UserDontExist
+from app.users.domain.exceptions import UserNotFoundError
 from app.users.domain.repository import UserRepository
 from app.users.domain.user import User
 
@@ -20,7 +20,7 @@ class UpdateUser:
         user = await self._repository.find_by_id(user_id)
 
         if user is None:
-            raise UserDontExist("Usuário não encontrado!")
+            raise UserNotFoundError("Usuário não encontrado.")
 
         if name is not None:
             user.change_name(name)

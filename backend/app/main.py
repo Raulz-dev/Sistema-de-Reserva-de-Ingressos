@@ -1,6 +1,7 @@
 from fastapi import APIRouter, FastAPI
 
 from app.config.settings import settings
+from app.movies.presentation.router import router as movies_router
 from app.users.presentation.auth_router import router as auth_router
 from app.users.presentation.router import router as users_router
 
@@ -19,6 +20,7 @@ def read_health():
 
 api_v1.include_router(users_router)
 api_v1.include_router(auth_router)
+api_v1.include_router(movies_router)
 
 
 app.include_router(api_v1)

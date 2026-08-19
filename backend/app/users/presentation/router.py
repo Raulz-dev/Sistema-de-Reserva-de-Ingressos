@@ -24,42 +24,41 @@ from app.users.presentation.schemas import (
     ChangePasswordRequest,
     ChangePasswordResponse,
     CreateUserRequest,
-    CreateUserResponse,
-    GetUserByIdResponse,
-    ListAllUsersResponse,
     UpdateUserRequest,
-    UpdateUserResponse,
+    UserResponse,
 )
 
 router = APIRouter(prefix="/users", tags=["Users"])
 
 
-@router.get(
-    "", response_model=list[ListAllUsersResponse], status_code=status.HTTP_200_OK
-)
+def to_response(user: User) -> UserResponse:
+    return UserResponse(
+        id=user.id,
+        name=user.name,
+        email=user.email,
+        role=user.role,
+    )
+
+
+@router.get("", response_model=list[UserResponse], status_code=status.HTTP_200_OK)
 async def list_users(
     use_case: Annotated[ListUsers, Depends(get_list_all_user)],
     _: Annotated[User, Depends(require_admin)],
-) -> list[ListAllUsersResponse]:
+) -> list[UserResponse]:
 
     users = await use_case.execute()
 
-    return [
-        ListAllUsersResponse(
-            id=user.id, name=user.name, email=user.email, role=user.role
-        )
-        for user in users
-    ]
+    return [to_response(user) for user in users]
 
 
 @router.get(
-    "/{user_id}", response_model=GetUserByIdResponse, status_code=status.HTTP_200_OK
+    "/{user_id}", response_model=UserResponse, status_code=status.HTTP_200_OK
 )
 async def get_user(
     user_id: UUID,
     use_case: Annotated[GetUserById, Depends(get_user_by_id)],
     current_user: Annotated[User, Depends(get_current_user)],
-) -> GetUserById:
+) -> UserResponse:
     if current_user.id != user_id and current_user.role != UserRole.ADMIN:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
@@ -68,15 +67,13 @@ async def get_user(
 
     user = await use_case.execute(user_id)
 
-    return GetUserByIdResponse(
-        id=user.id, name=user.name, email=user.email, role=user.role
-    )
+    return to_response(user)
 
 
-@router.post("", response_model=CreateUserResponse, status_code=status.HTTP_201_CREATED)
+@router.post("", response_model=UserResponse, status_code=status.HTTP_201_CREATED)
 async def create_user(
     data: CreateUserRequest, use_case: Annotated[CreateUser, Depends(get_create_user)]
-) -> CreateUserResponse:
+) -> UserResponse:
     try:
         user = await use_case.execute(
             name=data.name, email=data.email, password=data.password
@@ -87,28 +84,24 @@ async def create_user(
             status_code=status.HTTP_409_CONFLICT, detail=str(error)
         ) from error
 
-    return CreateUserResponse(
-        id=user.id, name=user.name, email=user.email, role=user.role
-    )
+    return to_response(user)
 
 
 @router.put(
-    "/{user_id}", response_model=UpdateUserResponse, status_code=status.HTTP_200_OK
+    "/{user_id}", response_model=UserResponse, status_code=status.HTTP_200_OK
 )
 async def update_user(
     user_id: UUID,
     data: UpdateUserRequest,
     use_case: Annotated[UpdateUser, Depends(get_update_user)],
     _: Annotated[User, Depends(require_admin)],
-) -> UpdateUserResponse:
+) -> UserResponse:
 
     user = await use_case.execute(
         user_id=user_id, name=data.name, email=data.email, role=data.role
     )
 
-    return UpdateUserResponse(
-        id=user_id, name=user.name, email=user.email, role=user.role
-    )
+    return to_response(user)
 
 
 @router.put(

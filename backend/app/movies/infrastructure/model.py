@@ -12,7 +12,7 @@ class MovieModel(Base, IdMixin, TimestampMixin):
     age_rating: Mapped[str] = mapped_column(nullable=False)
     duration_minutes: Mapped[int] = mapped_column(Integer, nullable=False)
     genre: Mapped[str] = mapped_column(nullable=False)
-    trailer_url: Mapped[str] = mapped_column(nullable=True)
+    trailer_url: Mapped[str | None] = mapped_column(nullable=True)
 
     def __str__(self) -> str:
         return self.title

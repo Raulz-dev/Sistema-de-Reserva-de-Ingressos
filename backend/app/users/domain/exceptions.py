@@ -18,11 +18,11 @@ class UserEmailAlreadyExistsError(Exception):
     pass
 
 
-class UserDontExist(Exception):
+class UserNotFoundError(Exception):
     pass
 
 
-class PasswordFail(Exception):
+class PasswordMismatchError(Exception):
     pass
 
 
