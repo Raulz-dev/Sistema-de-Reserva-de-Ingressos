@@ -111,7 +111,11 @@ async def update_cinema(
     _: Annotated[User, Depends(require_admin)],
 ) -> CinemaResponse:
     try:
-        cinema = await use_case.execute(cinema_id, **data.model_dump())
+        cinema = await use_case.execute(
+            cinema_id,
+            **data.model_dump(),
+            complement_set="complement" in data.model_fields_set,
+        )
         return cinema_to_response(cinema)
     except CinemaNotFoundError as error:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(error)) from error

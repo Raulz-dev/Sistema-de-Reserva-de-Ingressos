@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 from typing import Any
 from uuid import UUID
 
@@ -15,13 +15,13 @@ class JWTService:
         self._algorithm = algorithm
 
     def create_token(self, user_id: UUID) -> str:
-        expiration_time = datetime.now(timezone.utc) + timedelta(
+        expiration_time = datetime.now(UTC) + timedelta(
             minutes=self._expiration_minutes
         )
         dic_info = {
             "sub": str(user_id),
             "exp": expiration_time,
-            "iat": datetime.now(timezone.utc),
+            "iat": datetime.now(UTC),
         }
 
         return jwt.encode(dic_info, self._secret_key, algorithm=self._algorithm)

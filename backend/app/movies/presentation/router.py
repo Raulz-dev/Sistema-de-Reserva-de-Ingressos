@@ -37,6 +37,7 @@ def to_response(movie: Movie) -> MovieResponse:
         duration_minutes=movie.duration_minutes,
         genre=movie.genre,
         trailer_url=movie.trailer_url,
+        is_active=movie.is_active,
     )
 
 
@@ -93,6 +94,7 @@ async def update_movie(
             duration_minutes=data.duration_minutes,
             genre=data.genre,
             trailer_url=str(data.trailer_url) if data.trailer_url else None,
+            trailer_url_set="trailer_url" in data.model_fields_set,
         )
         return to_response(movie)
     except MovieNotFoundError as error:

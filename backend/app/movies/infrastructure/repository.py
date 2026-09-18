@@ -1,6 +1,6 @@
 from uuid import UUID
 
-from sqlalchemy import delete, select
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.movies.domain.movie import Movie
@@ -20,11 +20,19 @@ class SQLAlchemyMovieRepository(MovieRepository):
         return self._to_domain(model)
 
     async def find_movie_by_id(self, movie_id: UUID) -> Movie | None:
-        model = await self._db.get(MovieModel, movie_id)
+        model = await self._db.scalar(
+            select(MovieModel).where(
+                MovieModel.id == movie_id, MovieModel.is_active.is_(True)
+            )
+        )
         return None if model is None else self._to_domain(model)
 
     async def list_movies(self) -> list[Movie]:
-        result = await self._db.scalars(select(MovieModel).order_by(MovieModel.title))
+        result = await self._db.scalars(
+            select(MovieModel)
+            .where(MovieModel.is_active.is_(True))
+            .order_by(MovieModel.title)
+        )
         return [self._to_domain(model) for model in result.all()]
 
     async def update_movie(self, movie: Movie) -> Movie:
@@ -38,13 +46,10 @@ class SQLAlchemyMovieRepository(MovieRepository):
         model.duration_minutes = movie.duration_minutes
         model.genre = movie.genre
         model.trailer_url = movie.trailer_url
+        model.is_active = movie.is_active
         await self._db.commit()
         await self._db.refresh(model)
         return self._to_domain(model)
-
-    async def delete_movie(self, movie_id: UUID) -> None:
-        await self._db.execute(delete(MovieModel).where(MovieModel.id == movie_id))
-        await self._db.commit()
 
     @staticmethod
     def _to_model(movie: Movie) -> MovieModel:
@@ -56,6 +61,7 @@ class SQLAlchemyMovieRepository(MovieRepository):
             duration_minutes=movie.duration_minutes,
             genre=movie.genre,
             trailer_url=movie.trailer_url,
+            is_active=movie.is_active,
         )
 
     @staticmethod
@@ -68,4 +74,5 @@ class SQLAlchemyMovieRepository(MovieRepository):
             duration_minutes=model.duration_minutes,
             genre=model.genre,
             trailer_url=model.trailer_url,
+            is_active=model.is_active,
         )

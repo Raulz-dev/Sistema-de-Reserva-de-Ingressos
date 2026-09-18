@@ -11,6 +11,7 @@ class MovieResponse(BaseModel):
     duration_minutes: int
     genre: str
     trailer_url: str | None
+    is_active: bool
 
 
 class CreateMovieRequest(BaseModel):

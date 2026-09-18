@@ -18,6 +18,7 @@ class UpdateMovie:
         duration_minutes: int | None = None,
         genre: str | None = None,
         trailer_url: str | None = None,
+        trailer_url_set: bool = False,
     ) -> Movie:
         movie = await self._repository.find_movie_by_id(movie_id)
         if movie is None:
@@ -33,7 +34,7 @@ class UpdateMovie:
             movie.change_duration_minutes(duration_minutes)
         if genre is not None:
             movie.change_genre(genre)
-        if trailer_url is not None:
+        if trailer_url_set:
             movie.change_trailer_url(trailer_url)
 
         return await self._repository.update_movie(movie)

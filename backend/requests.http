@@ -11,7 +11,7 @@ Content-Type: application/json
 {
   "name": "Raul Silva",
   "email": "raul@example.com",
-  "password": "123456"
+  "password": "12345678"
 }
 
 
@@ -22,7 +22,7 @@ Content-Type: application/json
 
 {
   "email": "raul@example.com",
-  "password": "123456"
+  "password": "12345678"
 }
 
 
@@ -94,7 +94,7 @@ Authorization: Bearer {{adminToken}}
 }
 
 
-### Excluir filme (somente admin)
+### Desativar filme (somente admin)
 DELETE {{baseUrl}}/movies/{{createMovie.response.body.$.id}}
 Authorization: Bearer {{adminToken}}
 

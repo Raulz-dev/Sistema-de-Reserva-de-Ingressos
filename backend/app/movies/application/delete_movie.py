@@ -9,6 +9,8 @@ class DeleteMovie:
         self._repository = repository
 
     async def execute(self, movie_id: UUID) -> None:
-        if await self._repository.find_movie_by_id(movie_id) is None:
+        movie = await self._repository.find_movie_by_id(movie_id)
+        if movie is None:
             raise MovieNotFoundError("Filme não encontrado.")
-        await self._repository.delete_movie(movie_id)
+        movie.deactivate()
+        await self._repository.update_movie(movie)

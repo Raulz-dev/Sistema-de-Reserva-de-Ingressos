@@ -6,9 +6,9 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 class Settings(BaseSettings):
     app_name: str = "Sistema de reservas de ingressos - cinema"
     app_env: Literal["development", "production"] = "development"
-    debug: bool = True
+    debug: bool = False
     database_url: str
-    sql_echo: bool = True
+    sql_echo: bool = False
     jwt_secret: str
     token_expiration_minutes: int
     algorithm: str

@@ -54,9 +54,9 @@ async def get_current_user(
         payload = jwt_service.decode_token(credentials.credentials)
         subject = payload.get("sub")
         if not isinstance(subject, str):
-            raise ValueError
+            raise TypeError
         user_id = UUID(subject)
-    except ValueError as error:
+    except (TypeError, ValueError) as error:
         raise unauthorized from error
 
     user = await repository.find_by_id(user_id)

@@ -21,6 +21,7 @@ class UpdateCinema:
         complement: str | None = None,
         neighborhood: str | None = None,
         zip_code: str | None = None,
+        complement_set: bool = False,
     ) -> Cinema:
         cinema = await self._repository.find_cinema_by_id(cinema_id)
         if cinema is None:
@@ -38,7 +39,7 @@ class UpdateCinema:
             cinema.change_street(street)
         if number is not None:
             cinema.change_number(number)
-        if complement is not None:
+        if complement_set:
             cinema.change_complement(complement)
         if neighborhood is not None:
             cinema.change_neighborhood(neighborhood)

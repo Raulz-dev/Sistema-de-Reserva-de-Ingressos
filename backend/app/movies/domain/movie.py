@@ -12,6 +12,7 @@ class Movie:
     duration_minutes: int
     genre: str
     trailer_url: str | None = None
+    is_active: bool = True
     id: UUID = field(default_factory=uuid7)
 
     def __post_init__(self) -> None:
@@ -23,6 +24,7 @@ class Movie:
         )
         self.genre = self._validate_genre(self.genre)
         self.trailer_url = self._validate_trailer_url(self.trailer_url)
+        self.is_active = self._validate_is_active(self.is_active)
 
     def change_title(self, new_title: str) -> None:
         self.title = self._validate_title(new_title)
@@ -41,6 +43,9 @@ class Movie:
 
     def change_trailer_url(self, new_trailer_url: str | None) -> None:
         self.trailer_url = self._validate_trailer_url(new_trailer_url)
+
+    def deactivate(self) -> None:
+        self.is_active = False
 
     @classmethod
     def _validate_title(cls, title: str) -> str:
@@ -67,6 +72,12 @@ class Movie:
     @staticmethod
     def _validate_trailer_url(trailer_url: str | None) -> str | None:
         return trailer_url
+
+    @staticmethod
+    def _validate_is_active(is_active: bool) -> bool:
+        if not isinstance(is_active, bool):
+            raise InvalidMovieError("O status deve ser verdadeiro ou falso.")
+        return is_active
 
     @staticmethod
     def _required_text(value: str, field_name: str) -> str:

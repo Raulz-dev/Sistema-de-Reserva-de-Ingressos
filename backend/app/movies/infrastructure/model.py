@@ -1,10 +1,10 @@
 from sqlalchemy import Integer
 from sqlalchemy.orm import Mapped, mapped_column
 
-from app.database.base import Base, IdMixin, TimestampMixin
+from app.database.base import Base, IdMixin, IsActiveMixin, TimestampMixin
 
 
-class MovieModel(Base, IdMixin, TimestampMixin):
+class MovieModel(Base, IdMixin, TimestampMixin, IsActiveMixin):
     __tablename__ = "movie"
 
     title: Mapped[str] = mapped_column(nullable=False)
