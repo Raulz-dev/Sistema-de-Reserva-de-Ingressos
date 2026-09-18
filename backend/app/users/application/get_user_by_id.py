@@ -14,5 +14,4 @@ class GetUserById:
 
         if user is None:
             raise UserNotFoundError("Usuário não encontrado.")
-        print("PRINT PRINT PRINT PRINT", user)
         return user

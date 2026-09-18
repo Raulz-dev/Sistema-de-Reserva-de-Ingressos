@@ -1,8 +1,10 @@
 from uuid import UUID
 
 from sqlalchemy import select
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.users.domain.exceptions import UserEmailAlreadyExistsError
 from app.users.domain.repository import UserRepository
 from app.users.domain.user import User
 from app.users.infrastructure.models import UserModel
@@ -22,7 +24,11 @@ class SQLAlchemyUserRepository(UserRepository):
         )
 
         self._db.add(user_model)
-        await self._db.commit()
+        try:
+            await self._db.commit()
+        except IntegrityError as error:
+            await self._db.rollback()
+            raise UserEmailAlreadyExistsError("Email já cadastrado!") from error
         await self._db.refresh(user_model)
 
         return self._to_domain(user_model)
@@ -55,7 +61,11 @@ class SQLAlchemyUserRepository(UserRepository):
         user_model.role = user.role
         user_model.password_hash = user.password_hash
 
-        await self._db.commit()
+        try:
+            await self._db.commit()
+        except IntegrityError as error:
+            await self._db.rollback()
+            raise UserEmailAlreadyExistsError("Email já cadastrado!") from error
         await self._db.refresh(user_model)
 
         return self._to_domain(user_model)

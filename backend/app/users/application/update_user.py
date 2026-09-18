@@ -1,7 +1,10 @@
 from uuid import UUID
 
 from app.users.domain.enums import UserRole
-from app.users.domain.exceptions import UserNotFoundError
+from app.users.domain.exceptions import (
+    UserEmailAlreadyExistsError,
+    UserNotFoundError,
+)
 from app.users.domain.repository import UserRepository
 from app.users.domain.user import User
 
@@ -27,6 +30,9 @@ class UpdateUser:
 
         if email is not None:
             user.change_email(email)
+            user_with_email = await self._repository.find_by_email(user.email)
+            if user_with_email is not None and user_with_email.id != user.id:
+                raise UserEmailAlreadyExistsError("Email já cadastrado!")
 
         if role is not None:
             user.change_role(role)

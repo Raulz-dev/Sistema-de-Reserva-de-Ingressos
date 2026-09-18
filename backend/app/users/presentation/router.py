@@ -9,7 +9,12 @@ from app.users.application.get_user_by_id import GetUserById
 from app.users.application.list_all_users import ListUsers
 from app.users.application.update_user import UpdateUser
 from app.users.domain.enums import UserRole
-from app.users.domain.exceptions import UserEmailAlreadyExistsError
+from app.users.domain.exceptions import (
+    InvalidCredentialsError,
+    PasswordMismatchError,
+    UserEmailAlreadyExistsError,
+    UserNotFoundError,
+)
 from app.users.domain.user import User
 from app.users.presentation.dependencies import (
     get_change_password,
@@ -65,7 +70,12 @@ async def get_user(
             detail="Você não tem permissão para acessar este usuário",
         )
 
-    user = await use_case.execute(user_id)
+    try:
+        user = await use_case.execute(user_id)
+    except UserNotFoundError as error:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail=str(error)
+        ) from error
 
     return to_response(user)
 
@@ -97,9 +107,18 @@ async def update_user(
     _: Annotated[User, Depends(require_admin)],
 ) -> UserResponse:
 
-    user = await use_case.execute(
-        user_id=user_id, name=data.name, email=data.email, role=data.role
-    )
+    try:
+        user = await use_case.execute(
+            user_id=user_id, name=data.name, email=data.email, role=data.role
+        )
+    except UserNotFoundError as error:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail=str(error)
+        ) from error
+    except UserEmailAlreadyExistsError as error:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT, detail=str(error)
+        ) from error
 
     return to_response(user)
 
@@ -121,11 +140,20 @@ async def change_password(
             detail="Você só pode alterar a própria senha",
         )
 
-    await use_case.execute(
-        user_id,
-        email=data.email,
-        new_password=data.new_password,
-        new_password_confirmation=data.new_password_confirmation,
-    )
+    try:
+        await use_case.execute(
+            user_id,
+            email=data.email,
+            new_password=data.new_password,
+            new_password_confirmation=data.new_password_confirmation,
+        )
+    except UserNotFoundError as error:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail=str(error)
+        ) from error
+    except (InvalidCredentialsError, PasswordMismatchError) as error:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, detail=str(error)
+        ) from error
 
     return ChangePasswordResponse(message="Senha Alterada com sucesso")

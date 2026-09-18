@@ -19,7 +19,7 @@ class CreateUserRequest(BaseModel):
 
 
 class UpdateUserRequest(BaseModel):
-    name: str | None = Field(min_length=2, max_length=100)
+    name: str | None = Field(default=None, min_length=2, max_length=100)
     email: EmailStr | None = None
     role: UserRole | None = None
 
