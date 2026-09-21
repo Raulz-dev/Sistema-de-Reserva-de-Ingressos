@@ -104,6 +104,14 @@ class SQLAlchemyRoomRepository(RoomRepository):
         )
         return None if model is None else self._to_domain(model)
 
+    async def find_active_room_by_id(self, room_id: UUID) -> Room | None:
+        model = await self._db.scalar(
+            select(RoomModel).where(
+                RoomModel.id == room_id, RoomModel.is_active.is_(True)
+            )
+        )
+        return None if model is None else self._to_domain(model)
+
     async def find_room_by_name(self, cinema_id: UUID, name: str) -> Room | None:
         model = await self._db.scalar(
             select(RoomModel).where(

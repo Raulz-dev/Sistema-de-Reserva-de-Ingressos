@@ -94,11 +94,6 @@ Authorization: Bearer {{adminToken}}
 }
 
 
-### Desativar filme (somente admin)
-DELETE {{baseUrl}}/movies/{{createMovie.response.body.$.id}}
-Authorization: Bearer {{adminToken}}
-
-
 ### Criar cinema (somente admin)
 # @name createCinema
 POST {{baseUrl}}/cinemas
@@ -164,8 +159,51 @@ Authorization: Bearer {{adminToken}}
 }
 
 
+### Criar sessão (somente admin)
+# @name createSession
+POST {{baseUrl}}/sessions
+Content-Type: application/json
+Authorization: Bearer {{adminToken}}
+
+{
+  "movie_id": "{{createMovie.response.body.$.id}}",
+  "room_id": "{{createRoom.response.body.$.id}}",
+  "starts_at": "2026-10-01T19:00:00-03:00",
+  "ends_at": "2026-10-01T21:00:00-03:00",
+  "price": 25.00
+}
+
+
+### Listar sessões ativas (público)
+GET {{baseUrl}}/sessions
+
+
+### Buscar sessão por ID (público)
+GET {{baseUrl}}/sessions/{{createSession.response.body.$.id}}
+
+
+### Atualizar sessão (somente admin)
+PUT {{baseUrl}}/sessions/{{createSession.response.body.$.id}}
+Content-Type: application/json
+Authorization: Bearer {{adminToken}}
+
+{
+  "price": 30.00
+}
+
+
+### Desativar sessão (somente admin)
+DELETE {{baseUrl}}/sessions/{{createSession.response.body.$.id}}
+Authorization: Bearer {{adminToken}}
+
+
 ### Desativar sala (somente admin)
 DELETE {{baseUrl}}/cinemas/{{createCinema.response.body.$.id}}/rooms/{{createRoom.response.body.$.id}}
+Authorization: Bearer {{adminToken}}
+
+
+### Desativar filme (somente admin)
+DELETE {{baseUrl}}/movies/{{createMovie.response.body.$.id}}
 Authorization: Bearer {{adminToken}}
 
 
